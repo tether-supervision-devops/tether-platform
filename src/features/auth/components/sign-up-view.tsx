@@ -5,6 +5,7 @@ import { IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import UserAuthForm from './user-auth-form';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Authentication',
@@ -24,30 +25,32 @@ export default function SignUpViewPage({ stars }: { stars: number }) {
         Sign Up
       </Link>
       <div className='bg-muted relative hidden h-full flex-col p-10 text-white lg:flex dark:border-r'>
-        <div className='absolute inset-0 bg-zinc-900' />
+        <div className='absolute inset-0'>
+          <Image
+            src='/assets/background.png' // ⬅️ your image path
+            alt='Background'
+            fill
+            priority
+            className='object-cover'
+          />
+          <div className='absolute inset-0 bg-zinc-900/70' />{' '}
+          {/* Optional dark overlay */}
+        </div>
         <div className='relative z-20 flex items-center text-lg font-medium'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            className='mr-2 h-6 w-6'
-          >
-            <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
-          </svg>
-          Logo
+          <img
+            src='/assets/full-logo.svg' // ⬅️ replace with your actual image path
+            alt='Tether Logo'
+            className='mr-2 h-auto w-40 object-contain'
+          />
         </div>
         <div className='relative z-20 mt-auto'>
           <blockquote className='space-y-2'>
             <p className='text-lg'>
-              &ldquo;This starter template has saved me countless hours of work
-              and helped me deliver projects to my clients faster than ever
-              before.&rdquo;
+              “With Tether Supervision, I never feel like I’m working alone. The
+              support is immediate, the communication is clear, and our patients
+              feel the difference.”
             </p>
-            <footer className='text-sm'>Random Dude</footer>
+            <footer className='text-sm'>Senior MRI Technologist</footer>
           </blockquote>
         </div>
       </div>
