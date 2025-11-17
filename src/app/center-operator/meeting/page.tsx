@@ -468,7 +468,7 @@ function MeetingsdkPage() {
             style={{
               width: '100%',
               maxWidth: '100%',
-              height: isMobile ? 'calc(100dvh - 52px)' : 'calc(100dvh - 64px)'
+              height: isMobile ? 'calc(100dvh - 45px)' : 'calc(100dvh - 64px)'
             }}
           />
         )}
