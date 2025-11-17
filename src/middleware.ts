@@ -42,3 +42,7 @@ export async function updateSession(request: NextRequest) {
 
   return response;
 }
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)', '/api/(.*)']
+};
