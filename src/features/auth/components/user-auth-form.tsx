@@ -14,12 +14,18 @@ import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Enter a valid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' })
+  password: z
+    .string()
+    .min(6, { message: 'Password must be at least 6 characters' })
 });
 
 type UserFormValue = z.infer<typeof formSchema>;
 
-export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean }) {
+export default function UserAuthForm({
+  isSignUp = false
+}: {
+  isSignUp?: boolean;
+}) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, startTransition] = useTransition();
@@ -35,7 +41,7 @@ export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean 
   const onSubmit = async (data: UserFormValue) => {
     startTransition(async () => {
       const supabase = createClient();
-      
+
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({
           email: data.email,
@@ -44,7 +50,7 @@ export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean 
             emailRedirectTo: `${window.location.origin}/auth/callback`
           }
         });
-        
+
         if (error) {
           toast.error(error.message);
         } else {
@@ -55,14 +61,16 @@ export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean 
           email: data.email,
           password: data.password
         });
-        
+
         if (error) {
           toast.error(error.message);
         } else {
           toast.success('Signed In Successfully!');
-          
+
           // Get user role and redirect to appropriate dashboard
-          const { data: { user: authUser } } = await supabase.auth.getUser();
+          const {
+            data: { user: authUser }
+          } = await supabase.auth.getUser();
           if (authUser) {
             // Query database for role
             const { data: userData } = await supabase
@@ -70,24 +78,29 @@ export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean 
               .select('role')
               .eq('id', authUser.id)
               .single();
-            
+
             if (userData) {
-              const role = userData.role as 'supervisor' | 'center_operator' | 'tether_admin';
+              const role = userData.role as
+                | 'supervisor'
+                | 'center_operator'
+                | 'tether_admin';
               const rolePaths: Record<string, string> = {
-                'supervisor': '/supervisor/overview',
-                'center_operator': '/center-operator/overview',
-                'tether_admin': '/admin/overview'
+                supervisor: '/supervisor/overview',
+                center_operator: '/center-operator/overview',
+                tether_admin: '/admin/overview'
               };
               const redirectPath = rolePaths[role] || '/supervisor/overview';
               router.push(redirectPath);
             } else {
               // Fallback to callbackUrl or default
-              const callbackUrl = searchParams.get('callbackUrl') || '/supervisor/overview';
+              const callbackUrl =
+                searchParams.get('callbackUrl') || '/supervisor/overview';
               router.push(callbackUrl);
             }
           } else {
             // Fallback to callbackUrl or default
-            const callbackUrl = searchParams.get('callbackUrl') || '/supervisor/overview';
+            const callbackUrl =
+              searchParams.get('callbackUrl') || '/supervisor/overview';
             router.push(callbackUrl);
           }
         }
@@ -98,7 +111,7 @@ export default function UserAuthForm({ isSignUp = false }: { isSignUp?: boolean 
   return (
     <>
       <Form
-        form={form}
+        form={form as any}
         onSubmit={form.handleSubmit(onSubmit)}
         className='w-full space-y-2'
       >
