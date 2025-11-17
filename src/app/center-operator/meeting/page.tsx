@@ -29,6 +29,13 @@ type MeetingState = {
   params: MeetingParams | null;
 };
 
+const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const mobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
+  setIsMobile(mobile);
+}, []);
+
 const MeetingContext = createContext<{
   state: MeetingState;
   joinMeeting: (p: MeetingParams, opts?: { mode?: MeetingMode }) => void;
@@ -462,7 +469,7 @@ function MeetingsdkPage() {
             style={{
               width: '100%',
               maxWidth: '100%',
-              height: 'calc(100dvh - 64px)'
+              height: isMobile ? 'calc(100dvh - 52px)' : 'calc(100dvh - 64px)'
             }}
           />
         )}
