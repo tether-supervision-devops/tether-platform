@@ -30,7 +30,7 @@ const MeetingContext = createContext<{
   setMode: (m: MeetingMode) => void;
 } | null>(null);
 
-export function MeetingProvider({ children }: { children: React.ReactNode }) {
+function MeetingProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = React.useState<MeetingState>(() => {
     if (typeof window !== "undefined") {
       const raw = localStorage.getItem("tether_meeting_state");
@@ -62,7 +62,7 @@ export function MeetingProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useMeeting() {
+function useMeeting() {
   const ctx = useContext(MeetingContext);
   if (!ctx) throw new Error("useMeeting must be used within MeetingProvider");
   return ctx;
@@ -294,7 +294,7 @@ type SignatureResponse = {
 };
 
 // Zoom Meeting SDK Page (Client-side only with lazy loading)
-export function MeetingsdkPage() {
+function MeetingsdkPage() {
   const SHOW_FLOATING_BUTTONS = false;
 
   // Credentials loaded from URL or entered by user
@@ -637,13 +637,13 @@ function ShowOrRenderRnd(
   };
 }
 
-export const MeetingContainer = dynamic(
+const MeetingContainer = dynamic(
   () => Promise.resolve(MeetingContainerInner),
   { ssr: false }
 );
 
 // Default export for Next.js page
-export default function Page() {
+export default function MeetingPage() {
   return (
     <MeetingProvider>
       <MeetingsdkPage />

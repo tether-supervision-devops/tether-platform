@@ -42,14 +42,14 @@ const MeetingContext = createContext<{
   setMode: (m: MeetingMode) => void;
 } | null>(null);
 
-export function MeetingProvider({ children }: { children: React.ReactNode }) {
+function MeetingProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = React.useState<MeetingState>(() => {
     if (typeof window !== 'undefined') {
       const raw = localStorage.getItem('tether_meeting_state');
       if (raw) {
         try {
           return JSON.parse(raw) as MeetingState;
-        } catch {}
+        } catch { }
       }
     }
     return { joining: false, mode: 'hidden', params: null };
@@ -78,7 +78,7 @@ export function MeetingProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useMeeting() {
+function useMeeting() {
   const ctx = useContext(MeetingContext);
   if (!ctx) throw new Error('useMeeting must be used within MeetingProvider');
   return ctx;
@@ -262,68 +262,68 @@ function MeetingContainerInner({
       {/* Floating wrapper (only when in float mode and Rnd ready) */}
       {state.mode === 'float' && RndMod
         ? (() => {
-            const Rnd = RndMod;
-            return (
-              <Rnd
-                size={{ width: winSize.width, height: winSize.height }}
-                position={{ x: winPos.x, y: winPos.y }}
-                bounds='window'
-                minWidth={460}
-                minHeight={300}
-                onDragStop={(
-                  _: import('react-draggable').DraggableEvent,
-                  d: import('react-draggable').DraggableData
-                ) => {
-                  setWinPos({ x: d.x, y: d.y });
-                }}
-                onResizeStop={(
-                  _: MouseEvent | TouchEvent,
-                  // __: import("re-resizable").ResizeDirection,
-                  ref: HTMLElement
-                ) => {
-                  setWinSize({
-                    width: parseInt(ref.style.width, 10),
-                    height: parseInt(ref.style.height, 10)
-                  });
-                }}
+          const Rnd = RndMod;
+          return (
+            <Rnd
+              size={{ width: winSize.width, height: winSize.height }}
+              position={{ x: winPos.x, y: winPos.y }}
+              bounds='window'
+              minWidth={460}
+              minHeight={300}
+              onDragStop={(
+                _: import('react-draggable').DraggableEvent,
+                d: import('react-draggable').DraggableData
+              ) => {
+                setWinPos({ x: d.x, y: d.y });
+              }}
+              onResizeStop={(
+                _: MouseEvent | TouchEvent,
+                // __: import("re-resizable").ResizeDirection,
+                ref: HTMLElement
+              ) => {
+                setWinSize({
+                  width: parseInt(ref.style.width, 10),
+                  height: parseInt(ref.style.height, 10)
+                });
+              }}
+              style={{
+                zIndex: 20000,
+                background: '#000',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+                borderRadius: 8,
+                overflow: 'hidden'
+              }}
+            >
+              <div
+                ref={floatInnerRef}
                 style={{
-                  zIndex: 20000,
-                  background: '#000',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
-                  borderRadius: 8,
-                  overflow: 'hidden'
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%'
                 }}
-              >
-                <div
-                  ref={floatInnerRef}
-                  style={{
-                    position: 'relative',
-                    width: '100%',
-                    height: '100%'
-                  }}
-                ></div>
-              </Rnd>
-            );
-          })()
+              ></div>
+            </Rnd>
+          );
+        })()
         : null}
 
       {/* Docked wrapper via portal */}
       {mounted && dockedMountEl
         ? createPortal(
-            <div
-              ref={dockedRef}
-              style={{
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-                background: '#000',
-                borderRadius: 0,
-                overflow: 'hidden',
-                display: state.mode === 'docked' ? 'block' : 'none'
-              }}
-            />,
-            dockedMountEl
-          )
+          <div
+            ref={dockedRef}
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: '100%',
+              background: '#000',
+              borderRadius: 0,
+              overflow: 'hidden',
+              display: state.mode === 'docked' ? 'block' : 'none'
+            }}
+          />,
+          dockedMountEl
+        )
         : null}
 
       {/* Minimized reopen */}
@@ -363,7 +363,7 @@ type SignatureResponse = {
 };
 
 // Zoom Meeting SDK Page (Client-side only with lazy loading)
-export function MeetingsdkPage() {
+function MeetingsdkPage() {
   const SHOW_FLOATING_BUTTONS = false;
 
   // Credentials loaded from URL or entered by user
@@ -836,7 +836,7 @@ function ShowOrRenderRnd(
   // );
 }
 
-export const MeetingContainer = dynamic(
+const MeetingContainer = dynamic(
   () => Promise.resolve(MeetingContainerInner),
   { ssr: false }
 );

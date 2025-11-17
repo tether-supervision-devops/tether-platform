@@ -174,7 +174,7 @@ function CalendarView({ sessions }: { sessions: SupervisionSession[] }) {
   );
 }
 
-export function SchedulePage({
+function SchedulePage({
   sessions = demoSessions,
   onStartVideoCall,
   getFacilityNameForSession,
