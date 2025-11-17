@@ -29,13 +29,6 @@ type MeetingState = {
   params: MeetingParams | null;
 };
 
-const [isMobile, setIsMobile] = useState(false);
-
-useEffect(() => {
-  const mobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
-  setIsMobile(mobile);
-}, []);
-
 const MeetingContext = createContext<{
   state: MeetingState;
   joinMeeting: (p: MeetingParams, opts?: { mode?: MeetingMode }) => void;
@@ -334,6 +327,12 @@ type SignatureResponse = {
 // Zoom Meeting SDK Page (Client-side only with lazy loading)
 function MeetingsdkPage() {
   const SHOW_FLOATING_BUTTONS = false;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
+    setIsMobile(mobile);
+  }, []);
 
   // Credentials loaded from URL or entered by user
   const [meetingNumber, setMeetingNumber] = useState<string>('84634097083');
