@@ -123,7 +123,7 @@ function MeetingContainerInner({
       if (isTabletPortrait) {
         iframe.style.height = `calc(100svh - ${BOTTOM_BAR_HEIGHT_PX}px)`;
       } else {
-        iframe.style.height = 'calc(100vh - 45px)';
+        iframe.style.height = 'calc(100vh - 65px)';
       }
       return;
     }
@@ -155,7 +155,7 @@ function MeetingContainerInner({
     if (isTabletPortrait) {
       iframe.style.height = `calc(100svh - ${BOTTOM_BAR_HEIGHT_PX}px)`;
     } else {
-      iframe.style.height = 'calc(100vh - 55px)';
+      iframe.style.height = 'calc(100vh - 65px)';
     }
 
     return;
