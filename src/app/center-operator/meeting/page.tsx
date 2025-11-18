@@ -339,11 +339,17 @@ function MeetingsdkPage() {
 
     updateHeight();
 
+    // Re-run after UI chrome settles (iOS Safari quirk)
+    const t1 = window.setTimeout(updateHeight, 300);
+    const t2 = window.setTimeout(updateHeight, 1000);
+
     window.visualViewport?.addEventListener('resize', updateHeight);
     window.addEventListener('orientationchange', updateHeight);
     window.addEventListener('scroll', updateHeight, { passive: true });
 
     return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       window.visualViewport?.removeEventListener('resize', updateHeight);
       window.removeEventListener('orientationchange', updateHeight);
       window.removeEventListener('scroll', updateHeight);
