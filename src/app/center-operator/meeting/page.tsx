@@ -91,7 +91,7 @@ function MeetingContainerInner({
   const [winSize, setWinSize] = React.useState({ width: 900, height: 560 });
   const [mounted, setMounted] = React.useState(false);
 
-  const BOTTOM_BAR_HEIGHT_PX = 210; // match pb-[132px] in MeetingPage
+  const BOTTOM_BAR_HEIGHT_PX = 270; // match pb-[132px] in MeetingPage
   const ZOOM_BASE_WIDTH = 1280; // logical Zoom layout width for scaling in docked mode
 
   function updateIframeSize(iframe: HTMLIFrameElement) {
