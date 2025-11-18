@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { SidebarRight } from '@/components/layout/sidebar-right';
 
 // === Global Meeting Context & Container (persistent across routes) ===
 import React, {
@@ -329,33 +330,6 @@ function MeetingsdkPage() {
   const SHOW_FLOATING_BUTTONS = false;
   const [isMobile, setIsMobile] = useState(false);
 
-  // Track actual visible viewport height and expose as CSS variable
-  useEffect(() => {
-    const updateHeight = () => {
-      if (typeof window === 'undefined') return;
-      const vh = window.visualViewport?.height ?? window.innerHeight;
-      document.documentElement.style.setProperty('--tether-vh', `${vh}px`);
-    };
-
-    updateHeight();
-
-    // Re-run after UI chrome settles (iOS Safari quirk)
-    const t1 = window.setTimeout(updateHeight, 300);
-    const t2 = window.setTimeout(updateHeight, 1000);
-
-    window.visualViewport?.addEventListener('resize', updateHeight);
-    window.addEventListener('orientationchange', updateHeight);
-    window.addEventListener('scroll', updateHeight, { passive: true });
-
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      window.visualViewport?.removeEventListener('resize', updateHeight);
-      window.removeEventListener('orientationchange', updateHeight);
-      window.removeEventListener('scroll', updateHeight);
-    };
-  }, []);
-
   useEffect(() => {
     const mobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
     setIsMobile(mobile);
@@ -398,12 +372,11 @@ function MeetingsdkPage() {
           display: 'flex',
           justifyContent: inMeeting ? 'flex-start' : 'center',
           alignItems: inMeeting ? 'stretch' : 'center',
-          height: isMobile
-            ? 'calc(var(--tether-vh, 100vh) - 25px)'
-            : 'calc(var(--tether-vh, 100vh) - 64px)',
+          height: isMobile ? 'calc(100svh - 64px)' : 'calc(100vh - 40px)',
           backgroundColor: '#f8f9fa',
           padding: '0px',
-          width: '100%'
+          width: '100%',
+          overflow: 'hidden'
         }}
       >
         {!state.joining || state.mode === 'hidden' ? (
@@ -733,7 +706,12 @@ const MeetingContainer = dynamic(() => Promise.resolve(MeetingContainerInner), {
 export default function MeetingPage() {
   return (
     <MeetingProvider>
-      <MeetingsdkPage />
+      <div className='flex h-full w-full'>
+        <div className='flex-1'>
+          <MeetingsdkPage />
+        </div>
+        <SidebarRight />
+      </div>
     </MeetingProvider>
   );
 }

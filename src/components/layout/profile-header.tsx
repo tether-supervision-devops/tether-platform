@@ -33,8 +33,8 @@ export function ProfileHeader({
           <span className='border-card absolute top-5 left-5 h-4 w-4 rounded-full border-[3px] bg-green-500 shadow-sm' />
         )}
       </div>
-      <div className='flex flex-col gap-0.5'>
-        <h2 className='text-foreground text-base leading-tight font-semibold'>
+      <div className='flex flex-col gap-0'>
+        <h2 className='text-foreground text-sm leading-tight font-semibold'>
           {name}
         </h2>
         <p className='text-muted-foreground text-sm font-medium'>{phone}</p>

@@ -44,7 +44,7 @@ export function AlarmButton({
       size='lg'
       onClick={handleClick}
       disabled={loading}
-      className="relative flex h-12 items-center gap-2 rounded-xl px-6 text-base font-semibold shadow-md transition-all before:absolute before:inset-0 before:-z-10 before:animate-pulse before:rounded-xl before:bg-red-500/40 before:content-[''] hover:shadow-lg"
+      className="relative flex h-9 items-center gap-2 rounded-xl px-6 text-base font-semibold shadow-md transition-all before:absolute before:inset-0 before:-z-10 before:animate-pulse before:rounded-xl before:bg-red-500/40 before:content-[''] hover:shadow-lg"
     >
       <IconAlertTriangle className='h-5 w-5' />
       {loading ? 'Sending...' : label}
