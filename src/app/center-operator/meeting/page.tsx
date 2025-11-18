@@ -90,6 +90,77 @@ function MeetingContainerInner({
   const [winPos, setWinPos] = React.useState({ x: 80, y: 80 });
   const [winSize, setWinSize] = React.useState({ width: 900, height: 560 });
   const [mounted, setMounted] = React.useState(false);
+
+  const BOTTOM_BAR_HEIGHT_PX = 210; // match pb-[132px] in MeetingPage
+  const ZOOM_BASE_WIDTH = 1280; // logical Zoom layout width for scaling in docked mode
+
+  function updateIframeSize(iframe: HTMLIFrameElement) {
+    if (!iframe || typeof window === 'undefined') return;
+
+    // Find the nearest parent that defines the meeting area in current mode
+    let container: HTMLElement | null = iframe.parentElement;
+
+    // Walk up until we find a container with meaningful dimensions
+    while (
+      container &&
+      (container.offsetHeight === 0 ||
+        getComputedStyle(container).display === 'none')
+    ) {
+      container = container.parentElement;
+    }
+
+    // If we don't have a container, fall back to viewport logic
+    if (!container) {
+      const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+      const width = window.innerWidth;
+      const isTabletPortrait = isPortrait && width >= 768 && width < 1024;
+
+      // No scaling in fullscreen/float when we can't resolve a container
+      iframe.style.transform = '';
+      iframe.style.transformOrigin = '';
+      iframe.style.width = '100%';
+
+      if (isTabletPortrait) {
+        iframe.style.height = `calc(100svh - ${BOTTOM_BAR_HEIGHT_PX}px)`;
+      } else {
+        iframe.style.height = 'calc(100vh - 45px)';
+      }
+      return;
+    }
+
+    // If this is the fullscreen or floating container, fill it without scaling
+    // (fullscreenRef / floatInnerRef are defined below and will be initialized
+    // before this function is ever invoked)
+    if (
+      container === fullscreenRef.current ||
+      container === floatInnerRef.current
+    ) {
+      iframe.style.transform = '';
+      iframe.style.transformOrigin = '';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      return;
+    }
+
+    // Otherwise, assume docked mode and size EXACTLY as initial load
+    const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    const width = window.innerWidth;
+    const isTabletPortrait = isPortrait && width >= 768 && width < 1024;
+
+    iframe.style.transform = '';
+    iframe.style.transformOrigin = '';
+    iframe.style.width = '100%';
+
+    // mirror initial-load logic
+    if (isTabletPortrait) {
+      iframe.style.height = `calc(100svh - ${BOTTOM_BAR_HEIGHT_PX}px)`;
+    } else {
+      iframe.style.height = 'calc(100vh - 45px)';
+    }
+
+    return;
+  }
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -150,9 +221,12 @@ function MeetingContainerInner({
         iframe.style.position = 'absolute';
         (iframe.style as any).inset = '0';
         iframe.style.width = '100%';
-        iframe.style.height = '100%';
         iframe.style.border = 'none';
         iframe.src = buildSrc() + '&_=' + Date.now();
+
+        // Size it correctly for current orientation/layout
+        updateIframeSize(iframe);
+
         iframeRef.current = iframe;
         target.appendChild(iframe);
       }
@@ -162,7 +236,7 @@ function MeetingContainerInner({
   const buildSrc = () => {
     if (!state.params) return '';
     const { meetingNumber, passWord, userName, uuid, leaveUrl } = state.params;
-    return `https://meeting-frontend-chi.vercel.app/?meetingNumber=${meetingNumber}&passWord=${passWord}&userName=${encodeURIComponent(userName)}&uuid=${uuid}&leaveUrl=${encodeURIComponent(leaveUrl)}&disableZoomLogo=true`;
+    return `https://meeting-frontend-view.vercel.app/?meetingNumber=${meetingNumber}&passWord=${passWord}&userName=${encodeURIComponent(userName)}&uuid=${uuid}&leaveUrl=${encodeURIComponent(leaveUrl)}&disableZoomLogo=true`;
   };
 
   // Create and/or move the iframe once a real container is available
@@ -189,9 +263,12 @@ function MeetingContainerInner({
       iframe.style.position = 'absolute';
       (iframe.style as any).inset = '0';
       iframe.style.width = '100%';
-      iframe.style.height = '100%';
       iframe.style.border = 'none';
       iframe.src = buildSrc() + '&_=' + Date.now();
+
+      // Size it correctly for current orientation/layout
+      updateIframeSize(iframe);
+
       iframeRef.current = iframe;
       target.appendChild(iframe);
       return;
@@ -203,6 +280,38 @@ function MeetingContainerInner({
       target.appendChild(iframe);
     }
   }, [state.joining, state.params, state.mode, RndMod, dockedMountEl, mounted]);
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleResize = () => {
+      if (iframeRef.current) {
+        updateIframeSize(iframeRef.current);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    const mq = window.matchMedia('(orientation: portrait)');
+    if (mq && mq.addEventListener) {
+      mq.addEventListener('change', handleResize);
+    } else if (mq && (mq as any).addListener) {
+      // Safari fallback
+      (mq as any).addListener(handleResize);
+    }
+
+    // initial sync
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (mq && mq.removeEventListener) {
+        mq.removeEventListener('change', handleResize);
+      } else if (mq && (mq as any).removeListener) {
+        (mq as any).removeListener(handleResize);
+      }
+    };
+  }, []);
 
   if (!state.joining || !state.params) {
     return null;
@@ -279,6 +388,7 @@ function MeetingContainerInner({
                 position: 'relative',
                 width: '100%',
                 height: '100%',
+                maxHeight: '100%',
                 background: '#000',
                 borderRadius: 0,
                 overflow: 'hidden',
@@ -470,10 +580,11 @@ function MeetingsdkPage() {
           // Join completed in 'docked' mode → inline placeholder for MeetingContainer portal
           <div
             ref={dockedMountRef}
+            className='w-full'
             style={{
-              width: '100%',
-              maxWidth: '100%',
-              height: '100%'
+              height: '100%',
+              maxHeight: '100%',
+              overflow: 'hidden'
             }}
           />
         )}

@@ -96,10 +96,10 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 /* Tablet Portrait: Horizontal Bottom Bar – matches landscape styling, sits underneath other overlays */
 function TabletPortraitBottomBar({ onOpenChat }: { onOpenChat: () => void }) {
   return (
-    <div className='fixed inset-x-3 bottom-0 z-0 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950'>
+    <div className='fixed inset-x-0 bottom-0 z-0 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950'>
       <div className='pb-safe'>
-        <div className='mx-auto max-w-6xl px-4 py-3 md:px-6'>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:items-stretch'>
+        <div className='mx-auto max-w-6xl px-3 py-3 md:px-3'>
+          <div className='grid grid-cols-1 gap-4 pl-12 md:grid-cols-2 md:items-stretch'>
             {/* LEFT COLUMN: Supervisor + Actions */}
             <div className='flex flex-col gap-3'>
               {/* Supervisor + Emergency */}
@@ -111,7 +111,7 @@ function TabletPortraitBottomBar({ onOpenChat }: { onOpenChat: () => void }) {
                     alt={supervisor.name}
                     className='h-full w-full object-cover'
                   />
-                  <span className='absolute -bottom-1 left-1 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-semibold text-white shadow-sm'>
+                  <span className='absolute -bottom-1 left-1 inline-flex items-center gap-1 rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] font-semibold text-white shadow-sm'>
                     <span className='relative flex h-1.5 w-1.5'>
                       <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-200 opacity-70' />
                       <span className='relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-100' />
