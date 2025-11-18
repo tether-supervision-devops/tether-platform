@@ -341,13 +341,12 @@ function MeetingsdkPage() {
 
     window.visualViewport?.addEventListener('resize', updateHeight);
     window.addEventListener('orientationchange', updateHeight);
-
-    // 👇 ADD THIS
     window.addEventListener('scroll', updateHeight, { passive: true });
 
     return () => {
       window.visualViewport?.removeEventListener('resize', updateHeight);
       window.removeEventListener('orientationchange', updateHeight);
+      window.removeEventListener('scroll', updateHeight);
     };
   }, []);
 
@@ -383,17 +382,22 @@ function MeetingsdkPage() {
     setMounted(true);
   }, []);
 
+  const inMeeting = state.joining && state.mode !== 'hidden';
+
   // Basic UI for entering credentials and triggering join
   return (
     <div style={{ padding: 0 }}>
       <main
         style={{
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '90vh',
+          justifyContent: inMeeting ? 'flex-start' : 'center',
+          alignItems: inMeeting ? 'stretch' : 'center',
+          height: isMobile
+            ? 'calc(var(--tether-vh, 100vh) - 35px)'
+            : 'calc(var(--tether-vh, 100vh) - 64px)',
           backgroundColor: '#f8f9fa',
-          padding: '0px'
+          padding: '0px',
+          width: '100%'
         }}
       >
         {!state.joining || state.mode === 'hidden' ? (
@@ -490,9 +494,7 @@ function MeetingsdkPage() {
             style={{
               width: '100%',
               maxWidth: '100%',
-              height: isMobile
-                ? 'calc(var(--tether-vh) - 35px)'
-                : 'calc(var(--tether-vh) - 64px)'
+              height: '100%'
             }}
           />
         )}
