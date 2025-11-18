@@ -13,6 +13,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  contentClassName?: string; // ⬅️ allow overrides
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -20,7 +21,8 @@ export const Modal: React.FC<ModalProps> = ({
   description,
   isOpen,
   onClose,
-  children
+  children,
+  contentClassName
 }) => {
   const onChange = (open: boolean) => {
     if (!open) {
@@ -30,7 +32,9 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onChange}>
-      <DialogContent>
+      <DialogContent
+        className={contentClassName} // ⬅️ apply override here
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

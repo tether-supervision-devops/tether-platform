@@ -37,6 +37,7 @@ export default function RequestHelp() {
         description='Request help from the team'
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        contentClassName='top-5 translate-y-0'
       >
         <div className='flex flex-col space-y-4 pt-2'>
           <div className='flex flex-col space-y-2'>

@@ -9,20 +9,24 @@ import { ModeToggle } from './ThemeToggle/theme-toggle';
 import CtaGithub from './cta-github';
 import Image from 'next/image';
 import { ProfileHeader } from './profile-header';
+import RequestHelp from './request-help';
 
 export default function Header() {
   return (
     <header className='flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12'>
       <div className='flex items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
-        <Separator orientation='vertical' className='mr-2 h-4' />
-        <Breadcrumbs />
+        <Separator orientation='vertical' className='mr-0 h-4' />
+        <img
+          src='/assets/full-logo.svg' // ⬅️ replace with your actual image path
+          alt='Tether Logo'
+          className='mr-0 h-auto w-20 object-contain'
+        />
       </div>
 
       <div className='flex items-center gap-2 px-4'>
-        <CtaGithub />
+        <RequestHelp />
         <div className='hidden md:flex'></div>
-        <UserNav />
         <ModeToggle />
       </div>
     </header>

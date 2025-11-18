@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { SidebarRight } from '@/components/layout/sidebar-right';
+import { SidebarRight, useLayoutMode } from '@/components/layout/sidebar-right';
 
 // === Global Meeting Context & Container (persistent across routes) ===
 import React, {
@@ -704,9 +704,20 @@ const MeetingContainer = dynamic(() => Promise.resolve(MeetingContainerInner), {
 
 // Default export for Next.js page
 export default function MeetingPage() {
+  const mode = useLayoutMode();
+
+  // Only need bottom offset when the tablet-portrait bottom bar is showing
+  const needsBottomOffset = mode === 'tablet-portrait';
+
   return (
     <MeetingProvider>
-      <div className='flex h-full w-full'>
+      <div
+        className={
+          needsBottomOffset
+            ? 'flex h-[100svh] w-full pb-[132px]'
+            : 'flex h-[100svh] w-full'
+        }
+      >
         <div className='flex-1'>
           <MeetingsdkPage />
         </div>
