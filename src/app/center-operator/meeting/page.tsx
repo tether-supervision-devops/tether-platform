@@ -399,7 +399,7 @@ function MeetingsdkPage() {
           justifyContent: inMeeting ? 'flex-start' : 'center',
           alignItems: inMeeting ? 'stretch' : 'center',
           height: isMobile
-            ? 'calc(var(--tether-vh, 100vh) - 35px)'
+            ? 'calc(var(--tether-vh, 100vh) - 25px)'
             : 'calc(var(--tether-vh, 100vh) - 64px)',
           backgroundColor: '#f8f9fa',
           padding: '0px',
