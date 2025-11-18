@@ -329,6 +329,25 @@ function MeetingsdkPage() {
   const SHOW_FLOATING_BUTTONS = false;
   const [isMobile, setIsMobile] = useState(false);
 
+  // Track actual visible viewport height and expose as CSS variable
+  useEffect(() => {
+    const updateHeight = () => {
+      if (typeof window === 'undefined') return;
+      const vh = window.visualViewport?.height ?? window.innerHeight;
+      document.documentElement.style.setProperty('--tether-vh', `${vh}px`);
+    };
+
+    updateHeight();
+
+    window.visualViewport?.addEventListener('resize', updateHeight);
+    window.addEventListener('orientationchange', updateHeight);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateHeight);
+      window.removeEventListener('orientationchange', updateHeight);
+    };
+  }, []);
+
   useEffect(() => {
     const mobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
     setIsMobile(mobile);
@@ -468,7 +487,9 @@ function MeetingsdkPage() {
             style={{
               width: '100%',
               maxWidth: '100%',
-              height: isMobile ? 'calc(100dvh - 45px)' : 'calc(100dvh - 64px)'
+              height: isMobile
+                ? 'calc(var(--tether-vh) - 35px)'
+                : 'calc(var(--tether-vh) - 64px)'
             }}
           />
         )}
