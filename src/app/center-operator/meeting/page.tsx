@@ -342,6 +342,9 @@ function MeetingsdkPage() {
     window.visualViewport?.addEventListener('resize', updateHeight);
     window.addEventListener('orientationchange', updateHeight);
 
+    // 👇 ADD THIS
+    window.addEventListener('scroll', updateHeight, { passive: true });
+
     return () => {
       window.visualViewport?.removeEventListener('resize', updateHeight);
       window.removeEventListener('orientationchange', updateHeight);
