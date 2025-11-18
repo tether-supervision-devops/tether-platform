@@ -9,8 +9,6 @@ import { ModeToggle } from './ThemeToggle/theme-toggle';
 import CtaGithub from './cta-github';
 import Image from 'next/image';
 import { ProfileHeader } from './profile-header';
-import RequestHelp from './request-help';
-import { AlarmButton } from './alarm-button';
 
 export default function Header() {
   return (
@@ -18,20 +16,18 @@ export default function Header() {
       <div className='flex items-center gap-2 px-4'>
         <SidebarTrigger className='-ml-1' />
         <Separator orientation='vertical' className='mr-2 h-4' />
-        <img
-          src='/assets/full-logo.svg' // ⬅️ replace with your actual image path
-          alt='Tether Logo'
-          className='mr-0 h-auto w-20 object-contain'
-        />
+        <Breadcrumbs />
       </div>
 
       <div className='flex items-center gap-2 px-4'>
-        <AlarmButton />
-
-        <div className='hidden md:flex'></div>
+        <CtaGithub />
+        <div className='hidden md:flex'>
+          <SearchInput />
+        </div>
+        <UserNav />
         <ProfileHeader />
         <ModeToggle />
-        <RequestHelp />
+        <ThemeSelector />
       </div>
     </header>
   );
