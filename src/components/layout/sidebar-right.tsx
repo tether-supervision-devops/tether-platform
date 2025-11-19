@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { toast } from 'sonner';
 import {
   Bell,
   ClipboardList,
@@ -95,6 +96,8 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 
 /* Tablet Portrait: Horizontal Bottom Bar – matches landscape styling, sits underneath other overlays */
 function TabletPortraitBottomBar({ onOpenChat }: { onOpenChat: () => void }) {
+  const handleAlarm = useAlarmHandler();
+
   return (
     <div className='fixed inset-x-0 bottom-0 z-0 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950'>
       <div className='pb-safe'>
@@ -136,6 +139,7 @@ function TabletPortraitBottomBar({ onOpenChat }: { onOpenChat: () => void }) {
                 {/* Emergency button */}
                 <button
                   type='button'
+                  onClick={handleAlarm}
                   className='ml-2 inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-red-500/40 bg-red-600 px-4 text-[11px] font-semibold tracking-[0.18em] text-white uppercase shadow-sm shadow-red-500/40 transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 focus-visible:outline-none dark:border-red-900 dark:bg-red-700 dark:hover:bg-red-600 dark:focus-visible:ring-offset-slate-950'
                 >
                   <Bell className='h-4 w-4' />
@@ -245,8 +249,27 @@ function FullSheet({ onClose }: { onClose: () => void }) {
   );
 }
 
+/* Shared alarm handler – put it here so all layouts can use the exact same logic */
+function useAlarmHandler() {
+  return () => {
+    const iframe = (window as any).__CURRENT_ZOOM_IFRAME__ as
+      | HTMLIFrameElement
+      | undefined;
+
+    if (!iframe?.contentWindow) {
+      toast.error('Zoom meeting not ready yet');
+      return;
+    }
+
+    iframe.contentWindow.postMessage({ type: 'INVITE_HOST' }, '*');
+    toast.success('Alarm sent to supervising physician.');
+  };
+}
+
 /* Shared original inner content – used in landscape & sheet */
 function OriginalInnerContent() {
+  const handleAlarm = useAlarmHandler();
+
   return (
     <>
       <SidebarHeader className='flex items-center justify-center border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-black'>
@@ -275,7 +298,10 @@ function OriginalInnerContent() {
               {supervisor.phone}
             </div>
           </div>
-          <button className='mb-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-600 px-4 text-xs font-semibold tracking-[0.16em] text-white uppercase shadow-sm transition hover:bg-red-500 dark:border-red-900 dark:bg-red-700 dark:hover:bg-red-600'>
+          <button
+            className='mb-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-600 px-4 text-xs font-semibold tracking-[0.16em] text-white uppercase shadow-sm transition hover:bg-red-500 dark:border-red-900 dark:bg-red-700 dark:hover:bg-red-600'
+            onClick={handleAlarm}
+          >
             <Bell className='h-4 w-4' />
             <span>Emergency</span>
           </button>

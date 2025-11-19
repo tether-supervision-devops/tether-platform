@@ -14,6 +14,7 @@ import React, {
 import { createPortal } from 'react-dom';
 import { HelpCircle, Zap, Book, Bell } from 'lucide-react';
 import type { DraggableEvent, DraggableData } from 'react-draggable';
+import { Toaster } from '@/components/ui/sonner';
 
 type MeetingMode = 'hidden' | 'float' | 'fullscreen' | 'docked';
 type MeetingParams = {
@@ -229,6 +230,7 @@ function MeetingContainerInner({
 
         iframeRef.current = iframe;
         target.appendChild(iframe);
+        (window as any).__CURRENT_ZOOM_IFRAME__ = iframe;
       }
     }
   }, [state.joining, state.params, state.mode]);
@@ -271,6 +273,7 @@ function MeetingContainerInner({
 
       iframeRef.current = iframe;
       target.appendChild(iframe);
+      (window as any).__CURRENT_ZOOM_IFRAME__ = iframe;
       return;
     }
 
@@ -278,6 +281,7 @@ function MeetingContainerInner({
     const iframe = iframeRef.current;
     if (iframe.parentElement !== target) {
       target.appendChild(iframe);
+      (window as any).__CURRENT_ZOOM_IFRAME__ = iframe;
     }
   }, [state.joining, state.params, state.mode, RndMod, dockedMountEl, mounted]);
 
